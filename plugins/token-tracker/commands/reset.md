@@ -1,6 +1,6 @@
 ---
 description: Reset (wipe) the token tracker database after explicit confirmation
-allowed-tools: Bash(python3:*)
+allowed-tools: Bash(*)
 ---
 
 **WARNING: This will permanently delete all tracked prompt and token data.**
@@ -8,7 +8,8 @@ allowed-tools: Bash(python3:*)
 First, show the user what will be deleted:
 
 ```bash
-python3 -c "
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
+"$PYTHON" -c "
 import sqlite3, pathlib
 
 db = pathlib.Path.home() / '.claude-tracker' / 'tracker.db'
@@ -42,7 +43,8 @@ Ask the user to explicitly type "yes" or "confirm" to proceed. **Do not run the 
 If the user confirms, run:
 
 ```bash
-python3 -c "
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
+"$PYTHON" -c "
 import sqlite3, pathlib
 
 db = pathlib.Path.home() / '.claude-tracker' / 'tracker.db'

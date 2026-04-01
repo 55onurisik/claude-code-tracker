@@ -1,13 +1,14 @@
 ---
 description: Export token tracking data to CSV or JSON
 argument-hint: [csv|json] [output-path]
-allowed-tools: Bash(python3:*)
+allowed-tools: Bash(*)
 ---
 
 Export all tracking data. Arguments: **$ARGUMENTS**
 
 ```bash
-python3 -c "
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
+"$PYTHON" -c "
 import sqlite3, pathlib, json, csv, sys
 from datetime import datetime
 

@@ -1,13 +1,14 @@
 ---
 description: Search past prompts by keyword
 argument-hint: <keyword>
-allowed-tools: Bash(python3:*)
+allowed-tools: Bash(*)
 ---
 
 Search for prompts matching: **$ARGUMENTS**
 
 ```bash
-python3 -c "
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
+"$PYTHON" -c "
 import sqlite3, pathlib, sys
 
 db = pathlib.Path.home() / '.claude-tracker' / 'tracker.db'
