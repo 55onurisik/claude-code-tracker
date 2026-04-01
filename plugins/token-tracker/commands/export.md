@@ -22,7 +22,10 @@ if fmt not in ('csv', 'json'):
     fmt = 'csv'
 
 ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-default_path = pathlib.Path.cwd() / f'claude-tracker-export-{ts}.{fmt}'
+# Get project dir from the most recent prompt's cwd field
+row = conn.execute('SELECT cwd FROM prompts ORDER BY id DESC LIMIT 1').fetchone()
+project_dir = pathlib.Path(row['cwd']) if row and row['cwd'] else pathlib.Path.cwd()
+default_path = project_dir / f'claude-tracker-export-{ts}.{fmt}'
 out_path = pathlib.Path(args[1]) if len(args) > 1 else default_path
 
 conn = sqlite3.connect(str(db))
