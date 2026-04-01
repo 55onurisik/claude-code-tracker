@@ -27,7 +27,7 @@ def main() -> None:
 
     try:
         session_id = data.get("session_id") or ""
-        user_prompt = data.get("user_prompt") or ""
+        user_prompt = data.get("prompt") or data.get("user_prompt") or ""
         cwd = data.get("cwd") or ""
         transcript_path = data.get("transcript_path") or ""
         now = datetime.now(timezone.utc).isoformat()
