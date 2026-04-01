@@ -6,8 +6,7 @@ allowed-tools: Bash(*)
 Run this command to display a cost report from the tracker database:
 
 ```bash
-PYTHON=$(for py in python3 python /usr/bin/python3 /usr/bin/python /usr/local/bin/python3 /opt/homebrew/bin/python3; do "$py" --version >/dev/null 2>&1 && echo "$py" && break; done)
-"${PYTHON:-python3}" -c "
+python -c "
 import sqlite3, pathlib
 
 db = pathlib.Path.home() / '.claude-tracker' / 'tracker.db'
