@@ -21,40 +21,13 @@ A Claude Code plugin that tracks every prompt and **real token usage** from the 
 
 ## Installation
 
-### Mac / Linux
-
-Open Terminal and run:
+**Mac, Linux, Windows — same command:**
 
 ```bash
-curl -sL https://raw.githubusercontent.com/55onurisik/claude-code-tracker/main/install.sh | bash
+python3 -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/55onurisik/claude-code-tracker/main/install.py').read())"
 ```
 
-Or manually:
-
-```bash
-git clone https://github.com/55onurisik/claude-code-tracker ~/.claude/plugins/repos/claude-code-tracker
-```
-
-Then **restart Claude Code**.
-
----
-
-### Windows
-
-1. Make sure [Python](https://www.python.org/downloads/) and [Git](https://git-scm.com/) are installed
-2. Download and run `install.bat`:
-
-```
-curl -o install.bat https://raw.githubusercontent.com/55onurisik/claude-code-tracker/main/install.bat
-install.bat
-```
-
-Or manually in PowerShell:
-
-```powershell
-git clone https://github.com/55onurisik/claude-code-tracker "$env:USERPROFILE\.claude\plugins\repos\claude-code-tracker"
-copy "$env:USERPROFILE\.claude\plugins\repos\claude-code-tracker\hooks\hooks.windows.json" "$env:USERPROFILE\.claude\plugins\repos\claude-code-tracker\hooks\hooks.json"
-```
+> **Windows:** use `python` instead of `python3` if needed.
 
 Then **restart Claude Code**.
 
