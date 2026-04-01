@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-code-tracker",
+  "description": "Token usage tracking plugin for Claude Code",
+  "owner": {
+    "name": "onur"
+  },
+  "plugins": [
+    {
+      "name": "token-tracker",
+      "description": "Track every prompt and real token usage from the Claude API into a local SQLite database. No estimates — actual token counts from transcript files.",
+      "source": "./plugins/token-tracker",
+      "category": "productivity",
+      "homepage": "https://github.com/55onurisik/claude-code-tracker"
+    }
+  ]
+}

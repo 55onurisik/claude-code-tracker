@@ -1,21 +1,28 @@
 #!/usr/bin/env python3
-import subprocess, pathlib, shutil, sys
+import subprocess, sys
 
-REPO = "https://github.com/55onurisik/claude-code-tracker"
-DEST = pathlib.Path.home() / ".claude" / "plugins" / "marketplaces" / "claude-plugins-official" / "plugins" / "token-tracker"
+MARKETPLACE = "55onurisik/claude-code-tracker"
+PLUGIN = "token-tracker"
 
-DEST.parent.mkdir(parents=True, exist_ok=True)
+def run(cmd):
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.stdout:
+        print(result.stdout.strip())
+    if result.returncode != 0 and result.stderr:
+        print(result.stderr.strip())
+    return result.returncode
 
-if DEST.exists():
-    print("Updating token-tracker...")
-    subprocess.run(["git", "-C", str(DEST), "pull"], check=True)
+print("Step 1/2 — Adding marketplace...")
+code = run(["claude", "plugin", "marketplace", "add", MARKETPLACE])
+
+print("Step 2/2 — Installing plugin...")
+code = run(["claude", "plugin", "install", PLUGIN])
+
+if code == 0:
+    print()
+    print("Done! Restart Claude Code, then run: /token-tracker:stats")
 else:
-    print("Installing token-tracker...")
-    subprocess.run(["git", "clone", REPO, str(DEST)], check=True)
-
-# Windows: switch to windows-compatible hooks
-if sys.platform == "win32":
-    shutil.copy(DEST / "hooks" / "hooks.windows.json", DEST / "hooks" / "hooks.json")
-
-print()
-print("Done! Restart Claude Code, then run: /token-tracker:stats")
+    print()
+    print("Something went wrong. Try manually:")
+    print(f"  claude plugin marketplace add {MARKETPLACE}")
+    print(f"  claude plugin install {PLUGIN}")
