@@ -22,7 +22,7 @@ if fmt not in ('csv', 'json'):
     fmt = 'csv'
 
 ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-default_path = pathlib.Path.home() / f'claude-tracker-export-{ts}.{fmt}'
+default_path = pathlib.Path.cwd() / f'claude-tracker-export-{ts}.{fmt}'
 out_path = pathlib.Path(args[1]) if len(args) > 1 else default_path
 
 conn = sqlite3.connect(str(db))
@@ -75,4 +75,4 @@ if data:
 "
 ```
 
-Confirm the export path and row count to the user. The file will be in the home directory unless a custom path was provided.
+Confirm the export path and row count to the user. The file will be saved in the current project directory unless a custom path was provided.
