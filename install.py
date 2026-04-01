@@ -5,7 +5,8 @@ MARKETPLACE = "55onurisik/claude-code-tracker"
 PLUGIN = "token-tracker"
 
 def run(cmd):
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    shell = sys.platform == "win32"
+    result = subprocess.run(cmd, capture_output=True, text=True, shell=shell)
     if result.stdout:
         print(result.stdout.strip())
     if result.returncode != 0 and result.stderr:
