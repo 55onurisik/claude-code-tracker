@@ -1,6 +1,5 @@
 {
-  "name": "claude-token-tracker",
-  "version": "1.0.0",
+  "name": "token-tracker",
   "description": "Track every prompt and real token usage from the Claude API into a local SQLite database. Uses actual token counts from transcript JSONL files, not estimates. Query history, analyze costs, export data.",
   "author": {
     "name": "onur"

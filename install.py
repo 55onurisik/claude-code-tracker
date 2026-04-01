@@ -2,22 +2,20 @@
 import subprocess, pathlib, shutil, sys
 
 REPO = "https://github.com/55onurisik/claude-code-tracker"
-
-# Claude Code scans marketplaces/ directory — this is the correct install path
-DEST = pathlib.Path.home() / ".claude" / "plugins" / "marketplaces" / "community" / "plugins" / "claude-code-tracker"
+DEST = pathlib.Path.home() / ".claude" / "plugins" / "marketplaces" / "claude-plugins-official" / "plugins" / "token-tracker"
 
 DEST.parent.mkdir(parents=True, exist_ok=True)
 
 if DEST.exists():
-    print("Updating claude-code-tracker...")
+    print("Updating token-tracker...")
     subprocess.run(["git", "-C", str(DEST), "pull"], check=True)
 else:
-    print("Installing claude-code-tracker...")
+    print("Installing token-tracker...")
     subprocess.run(["git", "clone", REPO, str(DEST)], check=True)
 
-# Windows: switch to windows-compatible hooks (uses 'python' instead of 'python3')
+# Windows: switch to windows-compatible hooks
 if sys.platform == "win32":
     shutil.copy(DEST / "hooks" / "hooks.windows.json", DEST / "hooks" / "hooks.json")
 
 print()
-print("Done! Restart Claude Code, then test with: /token-tracker:stats")
+print("Done! Restart Claude Code, then run: /token-tracker:stats")
