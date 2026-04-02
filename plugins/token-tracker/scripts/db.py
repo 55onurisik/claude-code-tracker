@@ -142,7 +142,8 @@ CREATE VIEW model_usage AS
     SELECT
         COALESCE(model, 'unknown')   AS model,
         COUNT(*)                     AS response_count,
-        COALESCE(SUM(input_tokens), 0)  AS total_input_tokens,
+        COALESCE(SUM(input_tokens), 0) + COALESCE(SUM(cache_creation_tokens), 0) + COALESCE(SUM(cache_read_tokens), 0)
+                                        AS total_input_tokens,
         COALESCE(SUM(output_tokens), 0) AS total_output_tokens,
         COALESCE(SUM(cost_usd), 0)      AS total_cost_usd
     FROM responses

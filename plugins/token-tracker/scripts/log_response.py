@@ -88,7 +88,7 @@ def main() -> None:
                     total_cost_usd      = total_cost_usd      + ?
                 WHERE session_id = ?
                 """,
-                (now, input_tok, output_tok, cost, session_id),
+                (now, input_tok + cache_create + cache_read, output_tok, cost, session_id),
             )
     except Exception:
         pass
