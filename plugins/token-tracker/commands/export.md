@@ -49,7 +49,7 @@ rows = conn.execute('''
         r.cost_usd,
         r.model
     FROM prompts p
-    INNER JOIN responses r ON r.prompt_id = p.id
+    LEFT JOIN responses r ON r.prompt_id = p.id
     WHERE p.prompt != ''
     ORDER BY p.timestamp
 ''').fetchall()

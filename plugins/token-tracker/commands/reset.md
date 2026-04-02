@@ -43,24 +43,20 @@ If the user confirms, run:
 
 ```bash
 python -c "
-import sqlite3, pathlib
+import pathlib, shutil
 
 db = pathlib.Path.home() / '.claude-tracker' / 'tracker.db'
+wal = db.with_suffix('.db-wal')
+shm = db.with_suffix('.db-shm')
+
 if not db.exists():
     print('Database does not exist.')
     exit()
 
-conn = sqlite3.connect(str(db))
-conn.execute('DELETE FROM responses')
-conn.execute('DELETE FROM prompts')
-conn.execute('DELETE FROM sessions')
-try:
-    conn.execute('DELETE FROM sqlite_sequence')
-except Exception:
-    pass
-conn.commit()
-conn.execute('VACUUM')
-conn.close()
+for f in (db, wal, shm):
+    if f.exists():
+        f.unlink()
+
 print('Database wiped. Token tracking will resume automatically on the next prompt.')
 "
 ```

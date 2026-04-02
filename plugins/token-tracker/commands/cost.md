@@ -7,7 +7,8 @@ Run this command to display a cost report from the tracker database:
 
 ```bash
 python -c "
-import sqlite3, pathlib
+import sys, sqlite3, pathlib
+sys.stdout.reconfigure(encoding='utf-8')
 
 db = pathlib.Path.home() / '.claude-tracker' / 'tracker.db'
 if not db.exists():
