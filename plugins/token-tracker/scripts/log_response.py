@@ -16,6 +16,11 @@ import os
 import sys
 from datetime import datetime, timezone
 
+if hasattr(sys.stdin, "reconfigure"):
+    sys.stdin.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 # Ensure the scripts directory is on the path regardless of cwd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
