@@ -11,10 +11,6 @@ if exist "%PLUGIN_DIR%" (
     git clone https://github.com/55onurisik/claude-code-tracker "%PLUGIN_DIR%"
 )
 
-REM Switch to Windows-compatible hooks
-echo Configuring for Windows...
-copy /Y "%PLUGIN_DIR%\hooks\hooks.windows.json" "%PLUGIN_DIR%\hooks\hooks.json"
-
 echo.
 echo Done! Restart Claude Code to activate the plugin.
 echo.
