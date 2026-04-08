@@ -63,6 +63,10 @@ if fmt == 'json':
         json.dump(data, f, indent=2, default=str)
 else:
     if data:
+        # Collapse newlines in prompt text so each row stays on one line
+        for row in data:
+            if row.get('prompt'):
+                row['prompt'] = ' '.join(row['prompt'].split())
         with open(out_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=data[0].keys())
             writer.writeheader()
