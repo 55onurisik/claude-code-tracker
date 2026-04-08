@@ -2,8 +2,8 @@
 """
 Stop hook for claude-token-tracker.
 
-Reads the session's transcript JSONL, extracts the real token usage from
-the last non-sidechain assistant entry, and logs it to the SQLite DB.
+Reads the session's transcript JSONL, sums token usage across all new
+non-sidechain assistant entries since the last recorded turn, and logs to SQLite.
 
 Runs with async: true in hooks.json — does not block Claude's exit.
 MUST always exit 0.
@@ -25,7 +25,7 @@ if hasattr(sys.stdout, "reconfigure"):
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from db import calculate_cost, get_conn  # noqa: E402
-from parse_transcript import get_last_usage  # noqa: E402
+from parse_transcript import get_all_usage_entries  # noqa: E402
 
 
 def main() -> None:
@@ -41,20 +41,33 @@ def main() -> None:
         if not transcript_path:
             sys.exit(0)
 
-        usage = get_last_usage(transcript_path)
-        if not usage:
+        all_entries = get_all_usage_entries(transcript_path)
+        if not all_entries:
             sys.exit(0)
 
-        input_tok = usage["input_tokens"]
-        output_tok = usage["output_tokens"]
-        cache_create = usage["cache_creation_tokens"]
-        cache_read = usage["cache_read_tokens"]
-        model = usage["model"]
-        total_tokens = input_tok + output_tok + cache_create + cache_read
-        cost = calculate_cost(model, input_tok, output_tok, cache_create, cache_read)
-        now = datetime.now(timezone.utc).isoformat()
-
         with get_conn() as conn:
+            # Get how many entries were already processed for this session
+            sess_row = conn.execute(
+                "SELECT last_entry_index FROM sessions WHERE session_id = ?",
+                (session_id,),
+            ).fetchone()
+            last_index = sess_row["last_entry_index"] if sess_row else 0
+
+            new_entries = all_entries[last_index:]
+            if not new_entries:
+                sys.exit(0)
+
+            # Sum tokens across all new API calls in this turn
+            input_tok = sum(e["input_tokens"] for e in new_entries)
+            output_tok = sum(e["output_tokens"] for e in new_entries)
+            cache_create = sum(e["cache_creation_tokens"] for e in new_entries)
+            cache_read = sum(e["cache_read_tokens"] for e in new_entries)
+            model = new_entries[-1]["model"]
+            total_tokens = input_tok + output_tok + cache_create + cache_read
+            cost = calculate_cost(model, input_tok, output_tok, cache_create, cache_read)
+            now = datetime.now(timezone.utc).isoformat()
+            new_index = len(all_entries)
+
             # Best-effort: find the most recent prompt for this session
             row = conn.execute(
                 "SELECT id FROM prompts WHERE session_id = ? ORDER BY id DESC LIMIT 1",
@@ -83,12 +96,13 @@ def main() -> None:
                 """
                 UPDATE sessions SET
                     last_seen           = ?,
+                    last_entry_index    = ?,
                     total_input_tokens  = total_input_tokens  + ?,
                     total_output_tokens = total_output_tokens + ?,
                     total_cost_usd      = total_cost_usd      + ?
                 WHERE session_id = ?
                 """,
-                (now, input_tok + cache_create + cache_read, output_tok, cost, session_id),
+                (now, new_index, input_tok + cache_create + cache_read, output_tok, cost, session_id),
             )
     except Exception:
         pass

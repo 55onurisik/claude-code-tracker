@@ -106,7 +106,8 @@ CREATE TABLE IF NOT EXISTS sessions (
     prompt_count        INTEGER NOT NULL DEFAULT 0,
     total_input_tokens  INTEGER NOT NULL DEFAULT 0,
     total_output_tokens INTEGER NOT NULL DEFAULT 0,
-    total_cost_usd      REAL    NOT NULL DEFAULT 0.0
+    total_cost_usd      REAL    NOT NULL DEFAULT 0.0,
+    last_entry_index    INTEGER NOT NULL DEFAULT 0
 );
 """
 
@@ -228,6 +229,7 @@ def _migrate(conn: sqlite3.Connection) -> None:
         ("total_input_tokens", "INTEGER NOT NULL DEFAULT 0"),
         ("total_output_tokens", "INTEGER NOT NULL DEFAULT 0"),
         ("total_cost_usd", "REAL NOT NULL DEFAULT 0.0"),
+        ("last_entry_index", "INTEGER NOT NULL DEFAULT 0"),
     ]:
         if col not in sess_cols:
             conn.execute(f"ALTER TABLE sessions ADD COLUMN {col} {defn}")
